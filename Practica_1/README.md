@@ -1,5 +1,5 @@
 # COMUNICACIONES INALAMBRICAS Y PROTOCOLOS PARA EL INTERNET DE LAS COSAS
-# Jorge Machado Gallas | 2025/2026
+# Jorge Machado Gallas | 2025/2026 | [GitHub](https://github.com/jorgemachadogallas-ux/ComunicacionesInalambricasIoT/tree/main)
 # PRACTICA 1
 _En esta primera práctica vamos a aprender a instalar nuestro propio bróker MQTT._
 ## Instalación Docker
@@ -162,9 +162,9 @@ Cada sensor será un proceso/programa diferente (o al menos un cliente con disti
 
 Ejemplo de comportamiento simulado:
 
-+ Temperatura: valores alrededor de 24–28 °C con algo de ruido.  
++ Temperatura: valores alrededor de 24–28°C.  
 + Humedad: 40–70%.  
-+ Iluminación: 0–1000 (lux simulados).  
++ Iluminación: 0–1000lux.  
 + pH: 5.5–7.5.  
 
 Estructura de cada mensaje:
@@ -176,9 +176,9 @@ Estructura de cada mensaje:
 
 Los actuadores son también clientes MQTT, pero:
 
-Están suscritos a los topics que les interesan.  
-Deciden qué hacer cuando reciben nuevos datos de sensores.  
-Publican a los topics de comandos/estado si quieres cerrar el bucle.  
++ Están suscritos a los topics que les interesan.  
++ Deciden qué hacer cuando reciben nuevos datos de sensores.  
++ Publican a los topics de comandos/estado si quieres cerrar el bucle.  
 
 Actuador de temperatura:
 Se suscribe al topic planta/sensores/temperatura.  
@@ -186,8 +186,8 @@ Define un umbral, por ejemplo:
 + Temperatura objetivo 25 °C.  
 
 Cuando recibe una medida:  
-+ Si T>25T>25: “activar refrigeración” → publica "ON" en planta/actuadores/temperatura/cmd.  
-+ Si T≤25T≤25: “desactivar refrigeración” → "OFF" en el mismo topic.  
++ Si T>25: “activar refrigeración” → publica "ON" en planta/actuadores/temperatura/cmd.  
++ Si T≤25: “desactivar refrigeración” → "OFF" en el mismo topic.  
 + También imprime por consola el estado o lo publica en planta/actuadores/temperatura/status.  
 
 Actuador de iluminación y nutrientes:  
@@ -202,11 +202,9 @@ Reglas de ejemplo:
 pH fuera de rango (p.ej. pH < 6.0 o > 7.0): "AÑADIR_NUTRIENTES" en planta/actuadores nutrientes/cmd.  
 + pH correcto: "NO_ACCION".  
 
-De este modo estás “controlando la cantidad de nutrientes” de forma lógica, aunque sólo sea una simulación en software.
-
 ## Flujo completo del sistema
 
-Un posible diagrama de flujo conceptual sería:
+Un diagrama de flujo sería:
 + Cada sensor genera un valor simulado y lo publica en su topic.
 + El broker MQTT reenvía el mensaje a todos los clientes suscritos.
 + Actuador de temperatura:
@@ -219,10 +217,8 @@ Un posible diagrama de flujo conceptual sería:
     + Publica comandos de luz y nutrientes.
 + Otro cliente “panel” se suscribe a todos los topics planta/# y muestra el estado global.
 
-Esto cumple el requisito de que “los clientes deben estar suscritos a los mensajes publicados por los dispositivos” y de que existan sensores y actuadores conectados por MQTT.
-
 ## Simulacion de sensores/actuadores
-Los vamos a programar en Python:
+Programados en Python:
 + sensor_temperatura.py
 + sensor_humedad.py
 + sensor_iluminacion.py
@@ -232,7 +228,8 @@ Los vamos a programar en Python:
 + monitor_planta.py como panel de visualización.
 
 ## Programas
-Los programas en Python listos para usar con Mosquitto en 192.168.1.135:1883. Cada uno es independiente, instalar paho-mqtt
+Los programas en Python listos para usar con Mosquitto en 192.168.1.135:1883.  
+Cada uno es independiente, primero hay que instalar paho-mqtt:  
 ```
 pip install paho-mqtt
 ```
@@ -261,7 +258,7 @@ client.loop_start()
 
 while True:
     temp = round(25 + random.uniform(-2, 3), 2)  # 23-28°C
-    mensaje = json.dumps({"valor": temp, "unidad": "°C", "timestamp": time.time()})
+    mensaje = json.dumps({"valor": temp, "unidad": "C", "timestamp": time.time()})
     client.publish(TOPIC, mensaje, qos=1)
     print(f"Publicado temperatura: {temp}°C")
     time.sleep(INTERVALO)
